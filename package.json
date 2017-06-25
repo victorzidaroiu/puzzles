@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Various scripts",
   "dependencies": {
+    "cli": "^1.0.1",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",

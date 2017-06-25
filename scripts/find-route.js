@@ -1,100 +1,47 @@
-let map;
-
-map = [
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "X", "."],
-  ["*", "*", "*", "*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", "*", "*", "*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", "*", "*", "*", "*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", "*", "*", "*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", "*", "*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  ["*", "*", "*", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*", "*", "*", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "*", "*", "*", "*", "*"],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "X", ".", ".", "."],
-  [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."]
+const defaultMap = [
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'X', '.'],
+  ['*', '*', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '*', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '*', '*', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '*', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*', '*', '*', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '*', '*', '*'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'X', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
 ];
 
-const maxRoutesToTry = 100000000;
-const obstacleChance = 25;
+const maxRoutesToTry = 10000000;
 
-const findXLocations = map => {
-  const xLocations = [];
-  for (let [x, row] of map.entries()) {
-    for (let [y, location] of row.entries()) {
-      if (location === 'X') {
-        xLocations.push( { x, y });
-      }
-    }
-  }
-
-  return xLocations;
-}
-
-const tryRoute = (route, destination) => {
-  let moves = 0;
-  while(moves < abandonRouteAfterMoves) {
-    const lastMove = route.pop();
-
-    const thisMove = {
-      x: lastMove.x + getRandomIntInclusive(-1, 1),
-      y: lastMove.y + getRandomIntInclusive(-1, 1)
-    }
-
-    route.push(lastMove);
-
-    if (destination.x === thisMove.x && destination.y === thisMove.y) {
-      route.push(thisMove);
-      return route;
-    }
-
-    if (map[thisMove.x]) {
-      switch (map[thisMove.x][thisMove.y]) {
-        case '.':
-
-          route.push(thisMove);
-        break;
-
-        case '*':
-        break;
-      }
-    }
-
-    moves++;
-  }
-
-  return false;
-}
-
-const getRandomIntInclusive = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const getRandomIntInclusive = (min, max) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 
 const printMap = (map) => {
-  for(const row of map) {
+  map.forEach((row) => {
     console.log(row.toString().replace(/,/g, ' '));
-  }
-}
+  });
+};
 
 const generateRandomMap = (sizeX, sizeY) => {
+  const obstacleChance = 25;
   const map = [];
   const tileTypes = {
     clear: '.',
     obstacle: '*',
   };
-  for (let i = 0; i < sizeX; i++) {
+
+  for (let i = 0; i < sizeX; i += 1) {
     map[i] = [];
-    for (let y = 0; y < sizeY; y++) {
+    for (let y = 0; y < sizeY; y += 1) {
       if (getRandomIntInclusive(0, 100) > obstacleChance) {
         map[i][y] = tileTypes.clear;
       } else {
@@ -107,57 +54,98 @@ const generateRandomMap = (sizeX, sizeY) => {
   map[getRandomIntInclusive(0, sizeX - 1)][getRandomIntInclusive(0, sizeY - 1)] = 'X';
 
   return map;
-}
+};
 
-console.log('')
-console.log('')
-console.log('')
-console.log('')
-console.log('')
-console.log('Map');
-console.log('====================');
+const findXLocations = (map) => {
+  const xLocations = [];
 
-if (!map) {
-  map = generateRandomMap(20, 20);
-}
+  map.forEach((row, x) => {
+    row.forEach((value, y) => {
+      if (value === 'X') {
+        xLocations.push({ x, y });
+      }
+    });
+  });
 
-printMap(map);
+  return xLocations;
+};
 
-const mapLocations = findXLocations(map);
+const tryRoute = (map, route, destination) => {
+  let moves = 0;
+  const abandonRouteAfterMoves = map.length * 4;
 
-if (mapLocations.length !== 2) {
-  throw "There must be exactly 2 locations!";
-}
+  while (moves < abandonRouteAfterMoves) {
 
-let [startLocation, stopLocation] = mapLocations;
-let abandonRouteAfterMoves = map.length * 4;
-let route;
-let routesTried = 0;
+    const lastMove = route.pop();
 
-console.log('')
-console.log('Finding route...');
-console.log('====================');
+    const thisMove = {
+      x: lastMove.x + getRandomIntInclusive(-1, 1),
+      y: lastMove.y + getRandomIntInclusive(-1, 1),
+    };
 
-while (routesTried < maxRoutesToTry) {
-  route = new Array(startLocation);
-  route = tryRoute(route, stopLocation);
-  if (route) {
-    console.log(`Route found after ${routesTried} routes tried! Route is ${route.length} points long.`);
-    break;
-  } else {
-    routesTried += 1;
+    route.push(lastMove);
+
+    if (destination.x === thisMove.x && destination.y === thisMove.y) {
+      route.push(thisMove);
+      return route;
+    }
+
+    if (map[thisMove.x] && map[thisMove.x][thisMove.y] === '.') {
+      route.push(thisMove);
+    }
+
+    moves += 1;
   }
-}
 
-route.shift();
-route.pop();
+  return false;
+};
 
-for (const point of route) {
-  map[point.x][point.y] = 'O';
-}
+const findMapRoutes = (map) => {
+  console.log('');
+  console.log('Map');
+  console.log('====================');
 
-printMap(map);
+  printMap(map);
 
-if (!route) {
-  console.log(`No route found. Tried ${maxRoutesToTry} routes.`);
-}
+  const mapLocations = findXLocations(map);
+
+  if (mapLocations.length !== 2) {
+    throw new Error('There must be exactly 2 locations!');
+  }
+
+  const [startLocation, stopLocation] = mapLocations;
+  let route;
+  let routesTried = 0;
+
+  console.log('\n', 'Finding route...', '\n');
+
+  while (routesTried < maxRoutesToTry) {
+    route = new Array(startLocation);
+    route = tryRoute(map, route, stopLocation);
+    if (route) {
+      console.log(`Route found after ${routesTried} routes tried! Route is ${route.length} points long.`);
+
+      route.shift();
+      route.pop();
+
+      const mapWithPath = map;
+
+      route.forEach(({ x, y }) => {
+        mapWithPath[x][y] = 'O';
+      });
+
+      printMap(mapWithPath);
+
+      break;
+    } else {
+      routesTried += 1;
+    }
+  }
+
+  if (!route) {
+    console.log(`No route found. Tried ${maxRoutesToTry} routes.`);
+  }
+};
+
+findMapRoutes(defaultMap);
+findMapRoutes(generateRandomMap(100, 100));

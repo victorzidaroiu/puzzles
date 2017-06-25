@@ -1,9 +1,9 @@
 function* pow() {
 	let result = Math.pow(yield "a", yield "b");
-	return result;
+  return result;
 }
 
-var g = pow();
+const g = pow();
 
 console.log(g.next().value);
 console.log(g.next(10).value);

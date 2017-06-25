@@ -1,25 +1,28 @@
-var cli = require('cli');
+const cli = require('cli');
 
-makePascalTriangle = function (n) {
-	var triangle = [[1]];
+const makePascalTriangle = (n) => {
+  const triangle = [[1]];
 
-	function makeRow(lastRow) {
-		var nextRow = [1];
-		lastRow.forEach(function(number, index) {
-			if (lastRow[index + 1] !== undefined)
-				nextRow.push(lastRow[index + 1] + number);
-		});
+  function makeRow(lastRow) {
+    const nextRow = [1];
+    lastRow.forEach((number, index) => {
+      if (lastRow[index + 1] !== undefined) {
+        nextRow.push(lastRow[index + 1] + number);
+      }
+    });
 
-		nextRow.push(1);
+    nextRow.push(1);
 
-		return nextRow;
-	}
+    return nextRow;
+  }
 
-	while (triangle.length < n) {
+  while (triangle.length < n) {
     triangle.push(makeRow(triangle[triangle.length - 1]));
   }
 
-  console.log(triangle);
+  return triangle;
+};
 
-	return triangle;
-}(cli.args[0] || 10);
+const pascalTriangle = makePascalTriangle(cli.args[0] || 10);
+
+console.log(pascalTriangle);
