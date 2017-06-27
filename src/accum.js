@@ -10,7 +10,7 @@ const accum = s =>
   s.split('').map((letter, index) => {
     const generatedLetters = Array(index + 1).fill(letter.toLowerCase());
     generatedLetters[0] = generatedLetters[0].toUpperCase();
-    console.log(`${generatedLetters.join('')}-`);
+
     return `${generatedLetters.join('')}-`;
   }).join('').slice(0, -1);
 
